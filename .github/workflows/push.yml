@@ -19,6 +19,10 @@ env:
   # Path to your OpenAPI spec.
   OAS_PATH: ./openapi.yml
 
+  # Path to your Stainless config. Optional; only provide this if you prefer
+  # to maintain the ground truth Stainless config in your own repo.
+  CONFIG_PATH: ./stainless.yml
+
   # The commit message to use for the SDK builds. Use a commit message in the
   # conventional commits format: https://www.conventionalcommits.org/en/v1.0.0/
   COMMIT_MESSAGE: "feat(api): update api"
