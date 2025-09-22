@@ -79,6 +79,7 @@ paths:
   /users/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: userId
         in: path
         required: true
         schema: { type: string }
@@ -140,6 +141,7 @@ paths:
   /users/{id}/roles:
     parameters:
       - name: id
+        x-stainless-param-name: userId
         in: path
         required: true
         schema: { type: string }
@@ -263,6 +265,7 @@ paths:
   /agents/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: agentId
         in: path
         required: true
         schema: { type: string }
@@ -395,6 +398,7 @@ paths:
   /files/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: fileId
         in: path
         required: true
         schema: { type: string }
@@ -437,6 +441,7 @@ paths:
   /files/{id}/url:
     parameters:
       - name: id
+        x-stainless-param-name: fileId
         in: path
         required: true
         schema: { type: string }
@@ -465,6 +470,7 @@ paths:
   /files/{id}/parses:
     parameters:
       - name: id
+        x-stainless-param-name: fileId
         in: path
         required: true
         schema: { type: string }
@@ -687,6 +693,7 @@ paths:
   /messages/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: messageId
         in: path
         required: true
         schema: { type: string }
@@ -894,10 +901,12 @@ paths:
   /models/{providerId}/{modelId}:
     parameters:
       - name: providerId
+        x-stainless-param-name: pathProviderId
         in: path
         required: true
         schema: { type: string }
       - name: modelId
+        x-stainless-param-name: pathModelId
         in: path
         required: true
         schema: { type: string }
@@ -1005,6 +1014,7 @@ paths:
   /permissions/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: permissionId
         in: path
         required: true
         schema: { type: integer, minimum: 1 }
@@ -1129,6 +1139,7 @@ paths:
   /providers/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: providerId
         in: path
         required: true
         schema: { type: string }
@@ -1253,6 +1264,7 @@ paths:
   /roles/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: roleId
         in: path
         required: true
         schema: { type: integer, minimum: 1 }
@@ -1314,6 +1326,7 @@ paths:
   /roles/{id}/permissions:
     parameters:
       - name: id
+        x-stainless-param-name: roleId
         in: path
         required: true
         schema: { type: integer, minimum: 1 }
@@ -1439,6 +1452,7 @@ paths:
   /session-groups/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: sessionGroupId
         in: path
         required: true
         schema: { type: string }
@@ -1620,6 +1634,7 @@ paths:
   /sessions/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: sessionId
         in: path
         required: true
         schema: { type: string }
@@ -1739,6 +1754,7 @@ paths:
   /topics/{id}:
     parameters:
       - name: id
+        x-stainless-param-name: topicId
         in: path
         required: true
         schema: { type: string }
@@ -1822,7 +1838,13 @@ components:
         - $ref: '#/components/schemas/ApiResponseBase'
         - type: object
           properties:
-            data: { nullable: true }
+            # Explicit type to avoid ambiguous schema (nullable still allows null)
+            data:
+              {
+                type: object,
+                nullable: true,
+                description: Empty response payload,
+              }
 
     # ---------- Users ----------
     ApiResponseUser:
