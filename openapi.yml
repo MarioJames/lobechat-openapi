@@ -1838,11 +1838,12 @@ components:
         - $ref: '#/components/schemas/ApiResponseBase'
         - type: object
           properties:
-            # Explicit type to avoid ambiguous schema (nullable still allows null)
+            # Explicit empty object for Stainless + allow null
             data:
               {
                 type: object,
                 nullable: true,
+                x-stainless-empty-object: true,
                 description: Empty response payload,
               }
 

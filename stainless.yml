@@ -18,9 +18,6 @@ targets:
     publish:
       npm: false
 
-openapi:
-  code_samples: 'bump.sh'
-
 # `environments` are a map of the name of the environment (e.g. "sandbox",
 # "production") to the corresponding url to use.
 environments:
@@ -62,7 +59,7 @@ resources:
         models:
           api_response_user_roles: '#/components/schemas/ApiResponseUserRoles'
         methods:
-          retrieve: get /users/{id}/roles
+          list: get /users/{id}/roles
           update: patch /users/{id}/roles
           clear: delete /users/{id}/roles
 
@@ -145,7 +142,7 @@ resources:
     models:
       api_response_provider: '#/components/schemas/ApiResponseProvider'
       provider: '#/components/schemas/Provider'
-      create_provider: '#/components/schemas/CreateProviderRequest'
+      create_provider_request: '#/components/schemas/CreateProviderRequest'
     methods:
       list: get /providers
       create: post /providers
@@ -194,7 +191,7 @@ resources:
       list: get /sessions
       create: post /sessions
       batch_update: patch /sessions
-      list_groups: get /sessions/groups
+      list_grouped_by_agent: get /sessions/groups
       retrieve: get /sessions/{id}
       update: patch /sessions/{id}
       delete: delete /sessions/{id}
