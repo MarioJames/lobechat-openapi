@@ -13,9 +13,23 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  # Stainless project name.
+  STAINLESS_PROJECT: lobehub
+
+  # Path to your OpenAPI spec.
+  OAS_PATH: ./openapi.yml
+
   # The commit message to use for the SDK builds. Use a commit message in the
   # conventional commits format: https://www.conventionalcommits.org/en/v1.0.0/
-  COMMIT_MESSAGE: 'feat(api): update api'
+  COMMIT_MESSAGE: "feat(api): update api"
+
+  # When to fail the job based on build conclusion.
+  # Options: "never" | "note" | "warning" | "error" | "fatal".
+  FAIL_ON: error
+
+  # In your repo secrets, configure:
+  # - STAINLESS_API_KEY: a Stainless API key, which you can generate on the
+  #   Stainless organization dashboard
 
 jobs:
   build:
@@ -34,4 +48,4 @@ jobs:
           oas_path: ${{ env.OAS_PATH }}
           config_path: ${{ env.CONFIG_PATH }}
           commit_message: ${{ env.COMMIT_MESSAGE }}
-          fail_on: error
+          fail_on: ${{ env.FAIL_ON }}
