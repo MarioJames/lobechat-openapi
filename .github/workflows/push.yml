@@ -1,0 +1,37 @@
+name: Build SDKs on branch push
+
+on:
+  push:
+    # Set this to the branch of the repository that the `main` Stainless branch
+    # of your project gets its OpenAPI spec from. This is usually the default
+    # branch of your repository.
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  # The commit message to use for the SDK builds. Use a commit message in the
+  # conventional commits format: https://www.conventionalcommits.org/en/v1.0.0/
+  COMMIT_MESSAGE: 'feat(api): update api'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run build
+        uses: stainless-api/upload-openapi-spec-action/build@v1
+        with:
+          stainless_api_key: ${{ secrets.STAINLESS_API_KEY }}
+          project: ${{ env.STAINLESS_PROJECT }}
+          oas_path: ${{ env.OAS_PATH }}
+          config_path: ${{ env.CONFIG_PATH }}
+          commit_message: ${{ env.COMMIT_MESSAGE }}
+          fail_on: error
