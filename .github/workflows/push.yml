@@ -53,3 +53,4 @@ jobs:
           config_path: ${{ env.CONFIG_PATH }}
           commit_message: ${{ env.COMMIT_MESSAGE }}
           fail_on: ${{ env.FAIL_ON }}
+
