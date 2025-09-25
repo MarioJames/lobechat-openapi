@@ -23,6 +23,11 @@ targets:
 environments:
   production: /api/v1
 
+# openapi config，https://www.stainless.com/docs/reference/config#open-api-config
+openapi:
+  code_samples:
+    bump.sh: true
+
 # `resources` define the structure and organization for your API, such as how
 # methods and models are grouped together and accessed. See the [configuration
 # guide] for more information.
