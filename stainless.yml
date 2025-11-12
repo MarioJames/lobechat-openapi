@@ -82,10 +82,18 @@ resources:
 
   files:
     models:
+      api_response_file_list: '#/components/schemas/ApiResponseFileList'
       api_response_file_detail: '#/components/schemas/ApiResponseFileDetail'
+      api_response_file_url: '#/components/schemas/ApiResponseFileUrl'
+      api_response_file_parse: '#/components/schemas/ApiResponseFileParse'
+      api_response_batch_file_upload: '#/components/schemas/ApiResponseBatchFileUpload'
+      api_response_batch_get_files: '#/components/schemas/ApiResponseBatchGetFiles'
       file: '#/components/schemas/File'
       file_detail: '#/components/schemas/FileDetail'
+      file_url: '#/components/schemas/FileUrl'
       file_parse: '#/components/schemas/FileParse'
+      batch_file_upload: '#/components/schemas/BatchFileUpload'
+      batch_get_files: '#/components/schemas/BatchGetFiles'
     methods:
       list: get /files
       upload: post /files
