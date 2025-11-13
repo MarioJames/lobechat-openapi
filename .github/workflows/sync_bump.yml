@@ -28,7 +28,7 @@ jobs:
         uses: stainless-api/upload-openapi-spec-action@main
         with:
           stainless_api_key: ${{ secrets.STAINLESS_API_KEY }}
-          project_name: lobehub
+          project_name: lobehub-sit
           # Note: this should be the path to your specification file
           input_path: './openapi.yml'
           # Note: this file will be your spec extended with code samples

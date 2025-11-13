@@ -14,7 +14,7 @@ concurrency:
 
 env:
   # Stainless project name.
-  STAINLESS_PROJECT: lobehub
+  STAINLESS_PROJECT: lobehub-sit
 
   # Path to your OpenAPI spec.
   OAS_PATH: ./openapi.yml

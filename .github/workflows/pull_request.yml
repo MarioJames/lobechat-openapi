@@ -13,8 +13,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  STAINLESS_ORG: lobehub-MarioJames
-  STAINLESS_PROJECT: lobehub
+  STAINLESS_ORG: lobehub-sit-MarioJames
+  STAINLESS_PROJECT: lobehub-sit
   OAS_PATH: ./openapi.yml
 
 jobs:
