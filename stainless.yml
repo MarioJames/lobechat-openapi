@@ -5,9 +5,9 @@ organization:
   # and headings.
   name: lobehub-sit
   # Link to your API documentation.
-  docs: ''
+  docs: ""
   # Contact email for bug reports, questions, and support requests.
-  contact: ''
+  contact: ""
 
 # `targets` define the output targets and their customization options, such as
 # whether to emit the Node SDK and what it's package name should be.
@@ -41,10 +41,10 @@ resources:
     #
     # [reference]: https://www.stainless.com/docs/reference/config#method
     models:
-      api_response_base: '#/components/schemas/ApiResponseBase'
-      api_response_void: '#/components/schemas/ApiResponseVoid'
-      api_response_user: '#/components/schemas/ApiResponseUser'
-      user_with_roles: '#/components/schemas/UserWithRoles'
+      api_response_base: "#/components/schemas/ApiResponseBase"
+      api_response_void: "#/components/schemas/ApiResponseVoid"
+      api_response_user: "#/components/schemas/ApiResponseUser"
+      user_with_roles: "#/components/schemas/UserWithRoles"
     methods:
       retrieve_current: get /users/me
       list: get /users
@@ -62,7 +62,7 @@ resources:
         #
         # [reference]: https://www.stainless.com/docs/reference/config#model
         models:
-          api_response_user_roles: '#/components/schemas/ApiResponseUserRoles'
+          api_response_user_roles: "#/components/schemas/ApiResponseUserRoles"
         methods:
           list: get /users/{id}/roles
           update: patch /users/{id}/roles
@@ -70,9 +70,9 @@ resources:
 
   agents:
     models:
-      api_response_agent: '#/components/schemas/ApiResponseAgent'
-      agent: '#/components/schemas/Agent'
-      create_agent: '#/components/schemas/CreateAgentRequest'
+      api_response_agent: "#/components/schemas/ApiResponseAgent"
+      agent: "#/components/schemas/Agent"
+      create_agent: "#/components/schemas/CreateAgentRequest"
     methods:
       list: get /agents
       create: post /agents
@@ -82,18 +82,22 @@ resources:
 
   files:
     models:
-      api_response_file_list: '#/components/schemas/ApiResponseFileList'
-      api_response_file_detail: '#/components/schemas/ApiResponseFileDetail'
-      api_response_file_url: '#/components/schemas/ApiResponseFileUrl'
-      api_response_file_parse: '#/components/schemas/ApiResponseFileParse'
-      api_response_batch_file_upload: '#/components/schemas/ApiResponseBatchFileUpload'
-      api_response_batch_get_files: '#/components/schemas/ApiResponseBatchGetFiles'
-      file: '#/components/schemas/File'
-      file_detail: '#/components/schemas/FileDetail'
-      file_url: '#/components/schemas/FileUrl'
-      file_parse: '#/components/schemas/FileParse'
-      batch_file_upload: '#/components/schemas/BatchFileUpload'
-      batch_get_files: '#/components/schemas/BatchGetFiles'
+      api_response_file_list: "#/components/schemas/ApiResponseFileList"
+      api_response_file_detail: "#/components/schemas/ApiResponseFileDetail"
+      api_response_file_url: "#/components/schemas/ApiResponseFileUrl"
+      api_response_file_parse: "#/components/schemas/ApiResponseFileParse"
+      api_response_file_chunk_status: "#/components/schemas/ApiResponseFileChunkStatus"
+      api_response_file_chunk_task: "#/components/schemas/ApiResponseFileChunkTask"
+      api_response_batch_file_upload: "#/components/schemas/ApiResponseBatchFileUpload"
+      api_response_batch_get_files: "#/components/schemas/ApiResponseBatchGetFiles"
+      file: "#/components/schemas/File"
+      file_detail: "#/components/schemas/FileDetail"
+      file_url: "#/components/schemas/FileUrl"
+      file_parse: "#/components/schemas/FileParse"
+      file_chunk_task: "#/components/schemas/FileChunkTask"
+      file_chunk_status: "#/components/schemas/FileChunkStatus"
+      batch_file_upload: "#/components/schemas/BatchFileUpload"
+      batch_get_files: "#/components/schemas/BatchGetFiles"
     methods:
       list: get /files
       upload: post /files
@@ -101,14 +105,16 @@ resources:
       delete: delete /files/{id}
       get_presigned_url: get /files/{id}/url
       parse_content: post /files/{id}/parses
+      create_chunk_task: post /files/{id}/chunks
+      chunk_status: get /files/{id}/chunks
       batch_upload: post /files/batches
       batch_get: post /files/queries
 
   messages:
     models:
-      api_response_message: '#/components/schemas/ApiResponseMessage'
-      message: '#/components/schemas/Message'
-      create_message_request: '#/components/schemas/CreateMessageRequest'
+      api_response_message: "#/components/schemas/ApiResponseMessage"
+      message: "#/components/schemas/Message"
+      create_message_request: "#/components/schemas/CreateMessageRequest"
     methods:
       count: get /messages/count
       list: get /messages
@@ -120,8 +126,8 @@ resources:
 
   message_translations:
     models:
-      api_response_translation: '#/components/schemas/ApiResponseTranslation'
-      translate_trigger: '#/components/schemas/TranslateTrigger'
+      api_response_translation: "#/components/schemas/ApiResponseTranslation"
+      translate_trigger: "#/components/schemas/TranslateTrigger"
     methods:
       translate: post /message-translations/{messageId}
       retrieve: get /message-translations/{messageId}
@@ -130,9 +136,9 @@ resources:
 
   models:
     models:
-      api_response: '#/components/schemas/ApiResponseModel'
-      model: '#/components/schemas/Model'
-      create_model: '#/components/schemas/CreateModelRequest'
+      api_response: "#/components/schemas/ApiResponseModel"
+      model: "#/components/schemas/Model"
+      create_model: "#/components/schemas/CreateModelRequest"
     methods:
       list: get /models
       create: post /models
@@ -141,9 +147,9 @@ resources:
 
   permissions:
     models:
-      api_response_permission: '#/components/schemas/ApiResponsePermission'
-      permission: '#/components/schemas/Permission'
-      create_permission: '#/components/schemas/CreatePermissionRequest'
+      api_response_permission: "#/components/schemas/ApiResponsePermission"
+      permission: "#/components/schemas/Permission"
+      create_permission: "#/components/schemas/CreatePermissionRequest"
     methods:
       list: get /permissions
       create: post /permissions
@@ -153,9 +159,9 @@ resources:
 
   providers:
     models:
-      api_response_provider: '#/components/schemas/ApiResponseProvider'
-      provider: '#/components/schemas/Provider'
-      create_provider_request: '#/components/schemas/CreateProviderRequest'
+      api_response_provider: "#/components/schemas/ApiResponseProvider"
+      provider: "#/components/schemas/Provider"
+      create_provider_request: "#/components/schemas/CreateProviderRequest"
     methods:
       list: get /providers
       create: post /providers
@@ -165,9 +171,9 @@ resources:
 
   roles:
     models:
-      role: '#/components/schemas/Role'
-      api_response_role: '#/components/schemas/ApiResponseRole'
-      create_role_request: '#/components/schemas/CreateRoleRequest'
+      role: "#/components/schemas/Role"
+      api_response_role: "#/components/schemas/ApiResponseRole"
+      create_role_request: "#/components/schemas/CreateRoleRequest"
     methods:
       list: get /roles
       create: post /roles
@@ -177,7 +183,7 @@ resources:
     subresources:
       permissions:
         models:
-          api_response_role_permissions: '#/components/schemas/ApiResponseRolePermissions'
+          api_response_role_permissions: "#/components/schemas/ApiResponseRolePermissions"
         methods:
           list: get /roles/{id}/permissions
           update: patch /roles/{id}/permissions
@@ -185,8 +191,8 @@ resources:
 
   session_groups:
     models:
-      api_response_session_group: '#/components/schemas/ApiResponseSessionGroup'
-      session_group: '#/components/schemas/SessionGroup'
+      api_response_session_group: "#/components/schemas/ApiResponseSessionGroup"
+      session_group: "#/components/schemas/SessionGroup"
     methods:
       list: get /session-groups
       create: post /session-groups
@@ -196,10 +202,10 @@ resources:
 
   sessions:
     models:
-      api_response_session: '#/components/schemas/ApiResponseSession'
-      api_response_session_list: '#/components/schemas/ApiResponseSessionList'
-      session: '#/components/schemas/Session'
-      update_session_request: '#/components/schemas/UpdateSessionRequest'
+      api_response_session: "#/components/schemas/ApiResponseSession"
+      api_response_session_list: "#/components/schemas/ApiResponseSessionList"
+      session: "#/components/schemas/Session"
+      update_session_request: "#/components/schemas/UpdateSessionRequest"
     methods:
       list: get /sessions
       create: post /sessions
@@ -211,14 +217,38 @@ resources:
 
   topics:
     models:
-      api_response_topic: '#/components/schemas/ApiResponseTopic'
-      topic: '#/components/schemas/Topic'
+      api_response_topic: "#/components/schemas/ApiResponseTopic"
+      topic: "#/components/schemas/Topic"
     methods:
       list: get /topics
       create: post /topics
       retrieve: get /topics/{id}
       update: patch /topics/{id}
       delete: delete /topics/{id}
+
+  knowledge_bases:
+    models:
+      api_response_knowledge_base_list: "#/components/schemas/ApiResponseKnowledgeBaseList"
+      api_response_knowledge_base: "#/components/schemas/ApiResponseKnowledgeBase"
+      api_response_knowledge_base_delete: "#/components/schemas/ApiResponseKnowledgeBaseDelete"
+      knowledge_base: "#/components/schemas/KnowledgeBase"
+      create_knowledge_base_request: "#/components/schemas/CreateKnowledgeBaseRequest"
+      update_knowledge_base_request: "#/components/schemas/UpdateKnowledgeBaseRequest"
+      api_response_file_list: "#/components/schemas/ApiResponseFileList"
+      file: "#/components/schemas/File"
+    methods:
+      list: get /knowledge-bases
+      create: post /knowledge-bases
+      retrieve: get /knowledge-bases/{id}
+      update: patch /knowledge-bases/{id}
+      delete: delete /knowledge-bases/{id}
+    subresources:
+      files:
+        models:
+          api_response_file_list: "#/components/schemas/ApiResponseFileList"
+          file: "#/components/schemas/File"
+        methods:
+          list: get /knowledge-bases/{id}/files
 
 settings:
   # All generated integration tests that hit the prism mock http server are marked

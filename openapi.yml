@@ -334,6 +334,10 @@ paths:
         - Returns files with complete metadata including URL, hash, and metadata
       parameters:
         - in: query
+          name: keyword
+          schema: { type: string, maxLength: 100 }
+          description: Search keyword for file name (case-insensitive)
+        - in: query
           name: page
           schema: { type: integer, minimum: 1 }
           description: Page number (default 1)
@@ -345,10 +349,6 @@ paths:
           name: fileType
           schema: { type: string }
           description: Filter by file type (e.g., "image/", "application/pdf")
-        - in: query
-          name: search
-          schema: { type: string }
-          description: Search keyword for file name (case-insensitive)
         - in: query
           name: userId
           schema: { type: string }
@@ -554,6 +554,84 @@ paths:
         '403': { $ref: '#/components/responses/ForbiddenError' }
         '404': { $ref: '#/components/responses/NotFoundError' }
 
+  /files/{id}/chunks:
+    parameters:
+      - name: id
+        x-stainless-param-name: fileId
+        in: path
+        required: true
+        schema: { type: string }
+        description: Unique file identifier
+    post:
+      tags: [Files]
+      summary: Create file chunking task
+      description: |
+        Trigger an asynchronous chunking task for a file, with optional auto-embedding.
+        - Requires FILE_UPDATE permission
+        - If skipExist=true, will not create a new task when one already exists
+        - When autoEmbedding=true, an embedding task will be scheduled after chunking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skipExist:
+                  type: boolean
+                  nullable: true
+                  description: Skip creating a new chunking task if one already exists
+                autoEmbedding:
+                  type: boolean
+                  nullable: true
+                  description: Automatically trigger an embedding task after chunking
+      responses:
+        '200':
+          {
+            description: Chunking task created,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: '#/components/schemas/ApiResponseFileChunkTask',
+                      },
+                  },
+              },
+          }
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+    get:
+      tags: [Files]
+      summary: Get file chunking status and details
+      description: |
+        Query the chunking result and related async task status for a file.
+        - Requires FILE_READ permission
+        - Returns current chunk count
+        - Includes chunking task status and error
+        - Includes embedding task status, error and completion flag
+      responses:
+        '200':
+          {
+            description: File chunk status retrieved successfully,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: '#/components/schemas/ApiResponseFileChunkStatus',
+                      },
+                  },
+              },
+          }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+
   /files/batches:
     post:
       tags: [Files]
@@ -654,6 +732,295 @@ paths:
         '400': { $ref: '#/components/responses/BadRequestError' }
         '401': { $ref: '#/components/responses/UnauthorizedError' }
         '403': { $ref: '#/components/responses/ForbiddenError' }
+
+  /knowledge-bases:
+    get:
+      tags: [KnowledgeBases]
+      summary: List knowledge bases (paginated, searchable, filterable)
+      description: |
+        Get paginated list of knowledge bases with optional filtering and search.
+        - Requires KNOWLEDGE_BASE_READ permission
+        - Returns knowledge bases accessible by the current user
+        - Supports filtering by type (personal/shared) and enabled status
+      parameters:
+        - in: query
+          name: keyword
+          schema: { type: string, maxLength: 100 }
+          description: Search keyword for name or description (case-insensitive)
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1 }
+          description: Page number (default 1)
+        - in: query
+          name: pageSize
+          schema: { type: integer, minimum: 1, maximum: 100 }
+          description: Items per page (default 20, max 100)
+        - in: query
+          name: type
+          schema: { type: string, enum: [personal, shared] }
+          description: Filter by knowledge base type
+        - in: query
+          name: enabled
+          schema: { type: boolean }
+          description: Filter by enabled status
+      responses:
+        '200':
+          {
+            description: OK,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: '#/components/schemas/ApiResponseKnowledgeBaseList',
+                      },
+                  },
+              },
+          }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+    post:
+      tags: [KnowledgeBases]
+      summary: Create a new knowledge base
+      description: |
+        Create a new knowledge base with specified properties.
+        - Requires KNOWLEDGE_BASE_CREATE permission
+        - Returns the created knowledge base with complete metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  description: Knowledge base name (required)
+                description:
+                  type: string
+                  maxLength: 1000
+                  nullable: true
+                  description: Knowledge base description
+                avatar:
+                  type: string
+                  format: uri
+                  nullable: true
+                  description: Knowledge base avatar URL
+                type:
+                  type: string
+                  enum: [personal, shared]
+                  nullable: true
+                  description: Knowledge base type (default personal)
+                isPublic:
+                  type: boolean
+                  nullable: true
+                  description: Whether the knowledge base is public (default false)
+                settings:
+                  type: object
+                  additionalProperties: true
+                  nullable: true
+                  description: Knowledge base settings
+              required: [name]
+      responses:
+        '200':
+          {
+            description: Knowledge base created successfully,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: '#/components/schemas/ApiResponseKnowledgeBase',
+                      },
+                  },
+              },
+          }
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+
+  /knowledge-bases/{id}:
+    parameters:
+      - name: id
+        x-stainless-param-name: knowledgeBaseId
+        in: path
+        required: true
+        schema: { type: string }
+        description: Unique knowledge base identifier
+    get:
+      tags: [KnowledgeBases]
+      summary: Get knowledge base detail by ID
+      description: |
+        Retrieve detailed information about a specific knowledge base.
+        - Requires KNOWLEDGE_BASE_READ permission
+        - Checks access permissions and enabled status
+        - Returns complete knowledge base metadata
+      responses:
+        '200':
+          {
+            description: Knowledge base retrieved successfully,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: '#/components/schemas/ApiResponseKnowledgeBase',
+                      },
+                  },
+              },
+          }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+    patch:
+      tags: [KnowledgeBases]
+      summary: Update knowledge base (partial)
+      description: |
+        Update knowledge base properties.
+        - Requires KNOWLEDGE_BASE_UPDATE permission
+        - Only the owner can update the knowledge base
+        - All fields are optional
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  nullable: true
+                  description: Knowledge base name
+                description:
+                  type: string
+                  maxLength: 1000
+                  nullable: true
+                  description: Knowledge base description
+                avatar:
+                  type: string
+                  format: uri
+                  nullable: true
+                  description: Knowledge base avatar URL
+                type:
+                  type: string
+                  enum: [personal, shared]
+                  nullable: true
+                  description: Knowledge base type
+                isPublic:
+                  type: boolean
+                  nullable: true
+                  description: Whether the knowledge base is public
+                enabled:
+                  type: boolean
+                  nullable: true
+                  description: Whether the knowledge base is enabled
+                settings:
+                  type: object
+                  additionalProperties: true
+                  nullable: true
+                  description: Knowledge base settings
+      responses:
+        '200':
+          {
+            description: Knowledge base updated successfully,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: '#/components/schemas/ApiResponseKnowledgeBase',
+                      },
+                  },
+              },
+          }
+        '400': { $ref: '#/components/responses/BadRequestError' }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+    delete:
+      tags: [KnowledgeBases]
+      summary: Delete a knowledge base
+      description: |
+        Permanently delete a knowledge base.
+        - Requires KNOWLEDGE_BASE_DELETE permission
+        - Only the owner can delete the knowledge base
+        - Cascades delete to related files and grants
+        - Cannot be undone
+      responses:
+        '200':
+          {
+            description: Knowledge base deleted successfully,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: '#/components/schemas/ApiResponseKnowledgeBaseDelete',
+                      },
+                  },
+              },
+          }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
+
+  /knowledge-bases/{id}/files:
+    parameters:
+      - name: id
+        x-stainless-param-name: knowledgeBaseId
+        in: path
+        required: true
+        schema: { type: string }
+        description: Unique knowledge base identifier
+      - in: query
+        name: keyword
+        schema: { type: string, maxLength: 100 }
+        description: Search keyword for file name (case-insensitive)
+      - in: query
+        name: page
+        schema: { type: integer, minimum: 1 }
+        description: Page number (default 1)
+      - in: query
+        name: pageSize
+        schema: { type: integer, minimum: 1, maximum: 100 }
+        description: Items per page (default 20, max 100)
+      - in: query
+        name: fileType
+        schema: { type: string }
+        description: Filter by file type (e.g., "image/", "application/pdf")
+    get:
+      tags: [KnowledgeBases]
+      summary: List files in a knowledge base
+      description: |
+        Get a paginated list of files that belong to a specific knowledge base.
+        - Requires KNOWLEDGE_BASE_READ permission
+        - Returns the same file structure as the global file list
+        - Supports pagination and basic filtering by file type and search keyword
+      responses:
+        '200':
+          {
+            description: OK,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      { $ref: '#/components/schemas/ApiResponseFileList' },
+                  },
+              },
+          }
+        '401': { $ref: '#/components/responses/UnauthorizedError' }
+        '403': { $ref: '#/components/responses/ForbiddenError' }
+        '404': { $ref: '#/components/responses/NotFoundError' }
 
   /messages/count:
     get:
@@ -2159,6 +2526,18 @@ components:
         - type: object
           properties:
             data: { $ref: '#/components/schemas/FileParse' }
+    ApiResponseFileChunkStatus:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponseBase'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/FileChunkStatus' }
+    ApiResponseFileChunkTask:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponseBase'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/FileChunkTask' }
     ApiResponseBatchFileUpload:
       allOf:
         - $ref: '#/components/schemas/ApiResponseBase'
@@ -2220,6 +2599,44 @@ components:
             title: { type: string, nullable: true }
             totalCharCount: { type: integer, nullable: true }
             totalLineCount: { type: integer, nullable: true }
+    FileChunkTask:
+      type: object
+      properties:
+        fileId: { type: string }
+        chunkTaskId: { type: string, nullable: true }
+        embeddingTaskId: { type: string, nullable: true }
+        success: { type: boolean }
+        message: { type: string, nullable: true }
+      required: [fileId, success]
+    FileChunkError:
+      type: object
+      properties:
+        name: { type: string }
+        body:
+          type: object
+          properties:
+            detail: { type: string }
+          required: [detail]
+      required: [name, body]
+    FileChunkStatus:
+      type: object
+      properties:
+        chunkCount: { type: integer, nullable: true }
+        chunkingStatus:
+          type: string
+          nullable: true
+          enum: ['pending', 'processing', 'success', 'error']
+        chunkingError:
+          $ref: '#/components/schemas/FileChunkError'
+          nullable: true
+        embeddingStatus:
+          type: string
+          nullable: true
+          enum: ['pending', 'processing', 'success', 'error']
+        embeddingError:
+          $ref: '#/components/schemas/FileChunkError'
+          nullable: true
+        finishEmbedding: { type: boolean, nullable: true }
     BatchFileUpload:
       type: object
       properties:
@@ -2258,6 +2675,92 @@ components:
               error: { type: string }
             required: [fileId, error]
       required: [total, success, files, failed]
+
+    # ---------- Knowledge Bases ----------
+    ApiResponseKnowledgeBaseList:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponseBase'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                total: { type: integer }
+                knowledgeBases:
+                  type: array
+                  items: { $ref: '#/components/schemas/KnowledgeBase' }
+              required: [total, knowledgeBases]
+    ApiResponseKnowledgeBase:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponseBase'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                knowledgeBase: { $ref: '#/components/schemas/KnowledgeBase' }
+              required: [knowledgeBase]
+    ApiResponseKnowledgeBaseDelete:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponseBase'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                success: { type: boolean }
+                message: { type: string, nullable: true }
+              required: [success]
+    KnowledgeBase:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        avatar: { type: string, nullable: true }
+        type:
+          {
+            type: string,
+            enum: [personal, shared],
+            nullable: true,
+          }
+        userId: { type: string, nullable: true }
+        isPublic: { type: boolean, nullable: true }
+        enabled: { type: boolean }
+        settings: { type: object, additionalProperties: true, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, name, enabled, createdAt, updatedAt]
+    CreateKnowledgeBaseRequest:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 255 }
+        description: { type: string, maxLength: 1000, nullable: true }
+        avatar: { type: string, format: uri, nullable: true }
+        type:
+          {
+            type: string,
+            enum: [personal, shared],
+            nullable: true,
+          }
+        isPublic: { type: boolean, nullable: true }
+        settings: { type: object, additionalProperties: true, nullable: true }
+      required: [name]
+    UpdateKnowledgeBaseRequest:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 255, nullable: true }
+        description: { type: string, maxLength: 1000, nullable: true }
+        avatar: { type: string, format: uri, nullable: true }
+        type:
+          {
+            type: string,
+            enum: [personal, shared],
+            nullable: true,
+          }
+        isPublic: { type: boolean, nullable: true }
+        enabled: { type: boolean, nullable: true }
+        settings: { type: object, additionalProperties: true, nullable: true }
 
     # ---------- Messages ----------
     ApiResponseCount:
