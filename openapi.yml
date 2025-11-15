@@ -1013,8 +1013,7 @@ paths:
               {
                 application/json:
                   {
-                    schema:
-                      { $ref: '#/components/schemas/ApiResponseFileList' },
+                    schema: { $ref: '#/components/schemas/ApiResponseFileList' },
                   },
               },
           }
@@ -2567,6 +2566,22 @@ components:
         userId: { type: string, nullable: true }
         createdAt: { type: string, format: date-time, nullable: true }
         updatedAt: { type: string, format: date-time, nullable: true }
+        chunkCount: { type: integer, nullable: true }
+        chunkingStatus:
+          type: string
+          nullable: true
+          enum: ['pending', 'processing', 'success', 'error']
+        chunkingError:
+          $ref: '#/components/schemas/FileChunkError'
+          nullable: true
+        embeddingStatus:
+          type: string
+          nullable: true
+          enum: ['pending', 'processing', 'success', 'error']
+        embeddingError:
+          $ref: '#/components/schemas/FileChunkError'
+          nullable: true
+        finishEmbedding: { type: boolean, nullable: true }
     FileDetail:
       type: object
       properties:
@@ -2724,13 +2739,15 @@ components:
             enum: [personal, shared],
             nullable: true,
           }
-        userId: { type: string, nullable: true }
+        userId: { type: string }
+        clientId: { type: string, nullable: true }
         isPublic: { type: boolean, nullable: true }
         enabled: { type: boolean }
         settings: { type: object, additionalProperties: true, nullable: true }
+        accessedAt: { type: string, format: date-time }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
-      required: [id, name, enabled, createdAt, updatedAt]
+      required: [id, name, userId, enabled, accessedAt, createdAt, updatedAt]
     CreateKnowledgeBaseRequest:
       type: object
       properties:

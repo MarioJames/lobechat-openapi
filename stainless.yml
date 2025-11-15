@@ -234,8 +234,8 @@ resources:
       knowledge_base: "#/components/schemas/KnowledgeBase"
       create_knowledge_base_request: "#/components/schemas/CreateKnowledgeBaseRequest"
       update_knowledge_base_request: "#/components/schemas/UpdateKnowledgeBaseRequest"
-      api_response_file_list: "#/components/schemas/ApiResponseFileList"
-      file: "#/components/schemas/File"
+      kb_api_response_file_list: "#/components/schemas/ApiResponseFileList"
+      kb_file: "#/components/schemas/File"
     methods:
       list: get /knowledge-bases
       create: post /knowledge-bases
@@ -245,8 +245,8 @@ resources:
     subresources:
       files:
         models:
-          api_response_file_list: "#/components/schemas/ApiResponseFileList"
-          file: "#/components/schemas/File"
+          kb_api_response_file_list: "#/components/schemas/ApiResponseFileList"
+          kb_file: "#/components/schemas/File"
         methods:
           list: get /knowledge-bases/{id}/files
 
